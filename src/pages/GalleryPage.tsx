@@ -1,29 +1,30 @@
-import { Container } from "@mui/material";
-import { useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import GalleryHeader from "../components/gallery/GalleryHeader";
-import GalleryGrid from "../components/gallery/GalleryGrid";
-import { getImagesByFolder } from "../utils/galleryImages";
+import { useNavigate } from "react-router-dom";
+import GalleryList from "../components/dashboard/GalleryList";
+import PageContainer from "../components/shared/PageContainer";
+import PageHeader from "../components/shared/PageHeader";
+import { getGalleries } from "../utils/galleryImages";
 
-function GalleryPage() {
-  const { folderName } = useParams();
+function DashboardPage() {
   const navigate = useNavigate();
+  const galleries = getGalleries();
 
-  const images = useMemo(() => {
-    if (!folderName) return [];
-    return getImagesByFolder(folderName);
-  }, [folderName]);
+  function handleOpenGallery(folderName: string) {
+    navigate(`/gallery/${folderName}`);
+  }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
-      <GalleryHeader
-        title={folderName || "Gallery"}
-        onBack={() => navigate("/dashboard")}
+    <PageContainer>
+      <PageHeader
+        title="Galleries"
+        subtitle="Selecione uma galeria para visualizar as imagens."
       />
 
-      <GalleryGrid images={images} />
-    </Container>
+      <GalleryList
+        galleries={galleries}
+        onOpenGallery={handleOpenGallery}
+      />
+    </PageContainer>
   );
 }
 
-export default GalleryPage;
+export default DashboardPage;

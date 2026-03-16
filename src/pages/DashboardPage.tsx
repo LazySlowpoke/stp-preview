@@ -1,7 +1,7 @@
-import { Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import DashboardHeader from "../components/dashboard/DashboardHeader";
 import GalleryList from "../components/dashboard/GalleryList";
+import PageContainer from "../components/shared/PageContainer";
+import PageHeader from "../components/shared/PageHeader";
 import { getGalleries } from "../utils/galleryImages";
 
 function DashboardPage() {
@@ -13,13 +13,17 @@ function DashboardPage() {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
-      <DashboardHeader />
+    <PageContainer>
+      <PageHeader
+        title="Galleries"
+        subtitle="Selecione uma galeria para visualizar as imagens."
+      />
+
       <GalleryList
         galleries={galleries}
         onOpenGallery={handleOpenGallery}
       />
-    </Container>
+    </PageContainer>
   );
 }
 
