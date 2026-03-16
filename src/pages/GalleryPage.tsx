@@ -1,25 +1,15 @@
-import {
-  Container,
-  Typography,
-  Box,
-  Card,
-  CardMedia,
-  Button,
-  Grid,
-} from "@mui/material";
+import { Container } from "@mui/material";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import GalleryHeader from "../components/gallery/GalleryHeader";
+import GalleryGrid from "../components/gallery/GalleryGrid";
 
 const imageModules = import.meta.glob("../assets/images/*/*.{png,jpg,jpeg,webp}", {
   eager: true,
 }) as Record<string, { default: string }>;
 
-console.log("imageModules:", imageModules)
-
 const imagePaths = Object.entries(imageModules).map(([path, module]) => {
   const match = path.match(/images\/([^/]+)\/[^/]+$/);
-
-console.log("ImagePaths:", imagePaths)
 
   return {
     path,
@@ -42,43 +32,12 @@ function GalleryPage() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      <Box
-        sx={{
-          mb: 5,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 2,
-          flexWrap: "wrap",
-        }}
-      >
-        <Typography variant="h3" fontWeight="bold">
-          {folderName}
-        </Typography>
+      <GalleryHeader
+        title={folderName || "Gallery"}
+        onBack={() => navigate("/dashboard")}
+      />
 
-        <Button variant="contained" onClick={() => navigate("/dashboard")}>
-          Back
-        </Button>
-      </Box>
-
-      <Grid container spacing={3}>
-        {images.map((image, index) => (
-          <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card sx={{ borderRadius: 3, overflow: "hidden", boxShadow: 2 }}>
-              <CardMedia
-                component="img"
-                image={image}
-                alt={`Imagem ${index + 1}`}
-                sx={{
-                  width: "100%",
-                  height: 320,
-                  objectFit: "cover",
-                }}
-              />
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      <GalleryGrid images={images} />
     </Container>
   );
 }
