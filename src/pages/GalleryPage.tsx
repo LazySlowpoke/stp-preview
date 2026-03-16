@@ -14,8 +14,12 @@ const imageModules = import.meta.glob("../assets/images/*/*.{png,jpg,jpeg,webp}"
   eager: true,
 }) as Record<string, { default: string }>;
 
+console.log("imageModules:", imageModules)
+
 const imagePaths = Object.entries(imageModules).map(([path, module]) => {
   const match = path.match(/images\/([^/]+)\/[^/]+$/);
+
+console.log("ImagePaths:", imagePaths)
 
   return {
     path,
