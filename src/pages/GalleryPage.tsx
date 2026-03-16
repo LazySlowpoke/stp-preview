@@ -3,20 +3,7 @@ import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import GalleryHeader from "../components/gallery/GalleryHeader";
 import GalleryGrid from "../components/gallery/GalleryGrid";
-
-const imageModules = import.meta.glob("../assets/images/*/*.{png,jpg,jpeg,webp}", {
-  eager: true,
-}) as Record<string, { default: string }>;
-
-const imagePaths = Object.entries(imageModules).map(([path, module]) => {
-  const match = path.match(/images\/([^/]+)\/[^/]+$/);
-
-  return {
-    path,
-    src: module.default,
-    folderName: match ? match[1] : "",
-  };
-});
+import { getImagesByFolder } from "../utils/galleryImages";
 
 function GalleryPage() {
   const { folderName } = useParams();
@@ -24,10 +11,7 @@ function GalleryPage() {
 
   const images = useMemo(() => {
     if (!folderName) return [];
-
-    return imagePaths
-      .filter((image) => image.folderName === folderName)
-      .map((image) => image.src);
+    return getImagesByFolder(folderName);
   }, [folderName]);
 
   return (
