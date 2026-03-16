@@ -12,6 +12,9 @@ function LandingPage(){
         <Button variant='contained' component={Link} to="/dashboard">
             Browse
         </Button>
+        <Button variant='contained'>
+          Enter
+        </Button>
       </Stack>
     </Container>
   );
