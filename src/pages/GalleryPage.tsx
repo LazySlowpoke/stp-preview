@@ -2,6 +2,7 @@ import { Button } from "@mui/material";
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import GalleryGrid from "../components/gallery/GalleryGrid";
+import AppLayout from "../components/shared/AppLayout";
 import PageContainer from "../components/shared/PageContainer";
 import PageHeader from "../components/shared/PageHeader";
 import { getImagesByFolder } from "../utils/galleryImages";
@@ -16,18 +17,21 @@ function GalleryPage() {
   }, [folderName]);
 
   return (
-    <PageContainer>
-      <PageHeader
-        title={folderName || "Gallery"}
-        action={
-          <Button variant="contained" onClick={() => navigate("/dashboard")}>
-            Back
-          </Button>
-        }
-      />
+    <AppLayout>
+      <PageContainer>
+        <PageHeader
+          title={folderName || "Gallery"}
+          subtitle="Visualize as imagens desta galeria."
+          action={
+            <Button variant="contained" onClick={() => navigate("/dashboard")}>
+              Back
+            </Button>
+          }
+        />
 
-      <GalleryGrid images={images} />
-    </PageContainer>
+        <GalleryGrid images={images} />
+      </PageContainer>
+    </AppLayout>
   );
 }
 
