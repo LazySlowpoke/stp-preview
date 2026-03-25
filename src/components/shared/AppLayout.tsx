@@ -8,7 +8,13 @@ interface AppLayoutProps {
 
 function AppLayout({ children }: AppLayoutProps) {
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "background.default" }}>
+    <Box
+      sx={{
+        display: "flex",
+        minHeight: "100vh",
+        width: "100%",
+      }}
+    >
       <AppSidebar />
 
       <Box
@@ -16,6 +22,7 @@ function AppLayout({ children }: AppLayoutProps) {
         sx={{
           flex: 1,
           minWidth: 0,
+          width: "100%",
         }}
       >
         {children}

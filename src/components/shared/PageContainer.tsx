@@ -1,4 +1,4 @@
-import { Container } from "@mui/material";
+import { Box } from "@mui/material";
 import type { ReactNode } from "react";
 
 interface PageContainerProps {
@@ -7,9 +7,16 @@ interface PageContainerProps {
 
 function PageContainer({ children }: PageContainerProps) {
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
+    <Box
+      sx={{
+        width: "100%",
+        px: { xs: 2, md: 4 },
+        py: 4,
+        boxSizing: "border-box",
+      }}
+    >
       {children}
-    </Container>
+    </Box>
   );
 }
 
