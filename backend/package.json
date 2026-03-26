@@ -2,9 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
-  },
+"scripts": {
+  "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+  "db:test": "ts-node-dev --transpile-only src/database/testConnection.ts"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -25,6 +26,7 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.5.0",
+    "@types/pg": "^8.20.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^6.0.2"
   }
