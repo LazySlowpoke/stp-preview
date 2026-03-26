@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes";
+import galleryRoutes from "./routes/gallery.routes";
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes)
+app.use("/galleries", galleryRoutes)
 
 export default app;
