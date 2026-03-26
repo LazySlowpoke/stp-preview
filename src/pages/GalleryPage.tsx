@@ -1,37 +1,55 @@
-import { Button } from "@mui/material";
-import { useMemo } from "react";
+import { Alert, Box, Button, CircularProgress } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import GalleryGrid from "../components/gallery/GalleryGrid";
-import GalleryList from "../components/dashboard/GalleryList";
+import GalleryList from "../components/gallery/GalleryList";
 import AppLayout from "../components/shared/AppLayout";
 import PageContainer from "../components/shared/PageContainer";
 import PageHeader from "../components/shared/PageHeader";
-import { getGalleries, getImagesByFolder } from "../utils/galleryImages";
+import { getAllGalleries, type Gallery } from "../services/galleryService";
 
 function GalleryPage() {
-  const { folderName } = useParams();
+  const { galleryId } = useParams();
   const navigate = useNavigate();
 
-  const galleries = useMemo(() => getGalleries(), []);
-  const images = useMemo(() => {
-    if (!folderName) return [];
-    return getImagesByFolder(folderName);
-  }, [folderName]);
+  const [galleries, setGalleries] = useState<Gallery[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleOpenGallery(selectedFolderName: string) {
-    navigate(`/gallery/${selectedFolderName}`);
+  const isGalleryDetails = Boolean(galleryId);
+
+  useEffect(() => {
+    async function fetchGalleries() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const data = await getAllGalleries();
+        setGalleries(data);
+      } catch {
+        setError("Failed to load galleries.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (!isGalleryDetails) {
+      fetchGalleries();
+    }
+  }, [isGalleryDetails]);
+
+  function handleOpenGallery(galleryId: string) {
+    navigate(`/gallery/${galleryId}`);
   }
-
-  const isGalleryDetails = Boolean(folderName);
 
   return (
     <AppLayout>
       <PageContainer>
         <PageHeader
-          title={isGalleryDetails ? folderName! : "Gallery"}
+          title={isGalleryDetails ? galleryId! : "Gallery"}
           subtitle={
             isGalleryDetails
-              ? "Visualize as imagens desta galeria."
+              ? "Gallery details not implemented yet."
               : "Selecione uma galeria para visualizar as imagens."
           }
           action={
@@ -43,14 +61,24 @@ function GalleryPage() {
           }
         />
 
-        {isGalleryDetails ? (
-          <GalleryGrid images={images} />
-        ) : (
+        {!isGalleryDetails && loading && (
+          <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+            <CircularProgress />
+          </Box>
+        )}
+
+        {!isGalleryDetails && error && (
+          <Alert severity="error">{error}</Alert>
+        )}
+
+        {!isGalleryDetails && !loading && !error && (
           <GalleryList
             galleries={galleries}
             onOpenGallery={handleOpenGallery}
           />
         )}
+
+        {isGalleryDetails && <GalleryGrid images={[]} />}
       </PageContainer>
     </AppLayout>
   );
