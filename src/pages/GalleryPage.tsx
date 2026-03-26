@@ -9,14 +9,14 @@ import PageHeader from "../components/shared/PageHeader";
 import { getAllGalleries, type Gallery } from "../services/galleryService";
 
 function GalleryPage() {
-  const { galleryId } = useParams();
+  const { gallerySlug } = useParams();
   const navigate = useNavigate();
 
   const [galleries, setGalleries] = useState<Gallery[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const isGalleryDetails = Boolean(galleryId);
+  const isGalleryDetails = Boolean(gallerySlug);
 
   useEffect(() => {
     async function fetchGalleries() {
@@ -38,15 +38,15 @@ function GalleryPage() {
     }
   }, [isGalleryDetails]);
 
-  function handleOpenGallery(galleryId: string) {
-    navigate(`/gallery/${galleryId}`);
+  function handleOpenGallery(gallerySlug: string) {
+    navigate(`/gallery/${gallerySlug}`);
   }
 
   return (
     <AppLayout>
       <PageContainer>
         <PageHeader
-          title={isGalleryDetails ? galleryId! : "Gallery"}
+          title={isGalleryDetails ? gallerySlug! : "Gallery"}
           subtitle={
             isGalleryDetails
               ? "Gallery details not implemented yet."

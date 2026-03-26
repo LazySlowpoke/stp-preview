@@ -11,7 +11,7 @@ function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/gallery" element={<GalleryPage />} />
-      <Route path="/gallery/:folderName" element={<GalleryPage />} />
+      <Route path="/gallery/:gallerySlug" element={<GalleryPage />} />
       <Route path="/news" element={<NewsPage />} />
       <Route path="/about" element={<AboutPage />} />
     </Routes>

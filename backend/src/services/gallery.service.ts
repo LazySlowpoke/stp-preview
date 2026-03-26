@@ -10,13 +10,26 @@ export async function createGalleryService({
     throw new Error("Title is required");
   }
 
+  function generateSlug(title: string): string {
+    return title
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  }
+
+  const slug = generateSlug(title);
+
   const result = await pool.query(
     `
-      INSERT INTO galleries (title, description, cover_image)
-      VALUES ($1, $2, $3)
-      RETURNING id, title, description, cover_image, created_at
+      INSERT INTO galleries (title, slug, description, cover_image)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id, title, slug, description, cover_image, created_at
     `,
-    [title.trim(), description || null, coverImage || null]
+    [title.trim(), slug, description || null, coverImage || null]
   );
 
   return result.rows[0];
@@ -25,7 +38,7 @@ export async function createGalleryService({
 export async function getAllGalleriesService(): Promise<Gallery[]> {
   const result = await pool.query(
     `
-      SELECT id, title, description, cover_image, created_at
+      SELECT id, title, slug, description, cover_image, created_at
       FROM galleries
       ORDER BY created_at DESC
     `
@@ -45,4 +58,18 @@ export async function deleteGalleryService(id: string): Promise<boolean> {
   );
 
   return result.rowCount !== null && result.rowCount > 0;
+}
+
+export async function getGalleryBySlugService(slug:string): Promise<Gallery|null> {
+  const result = await pool.query(
+    `
+    SELECT id, title, slug , description, cover_image, created_at
+    FROM galleries
+    WHERE slug = $1
+    LIMIT 1
+    `,
+    [slug]
+  );
+
+  return result.rows[0] || null;
 }

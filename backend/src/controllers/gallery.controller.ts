@@ -3,6 +3,7 @@ import {
   createGalleryService,
   deleteGalleryService,
   getAllGalleriesService,
+  getGalleryBySlugService,
 } from "../services/gallery.service";
 
 export async function createGalleryController(req: Request, res: Response) {
@@ -58,6 +59,32 @@ export async function deleteGalleryController(req: Request, res: Response) {
   } catch {
     return res.status(500).json({
       message: "Failed to delete gallery",
+    });
+  }
+}
+
+export async function getGalleryBySlugController(req: Request, res: Response) {
+  try {
+    const { slug } = req.params;
+
+    if (!slug || Array.isArray(slug)) {
+      return res.status(400).json({
+        message: "Invalid gallery slug",
+      });
+    }
+
+    const gallery = await getGalleryBySlugService(slug);
+
+    if (!gallery) {
+      return res.status(404).json({
+        message: "Gallery not found",
+      });
+    }
+
+    return res.status(200).json(gallery);
+  } catch {
+    return res.status(500).json({
+      message: "Failed to fetch gallery",
     });
   }
 }

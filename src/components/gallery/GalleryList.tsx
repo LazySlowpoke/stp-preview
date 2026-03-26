@@ -4,6 +4,7 @@ import GalleryCard from "./GalleryCard";
 interface GalleryItem {
   id: string;
   title: string;
+  slug: string;
   description: string | null;
   cover_image: string | null;
   created_at: string;
@@ -11,7 +12,7 @@ interface GalleryItem {
 
 interface GalleryListProps {
   galleries: GalleryItem[];
-  onOpenGallery: (galleryId: string) => void;
+  onOpenGallery: (gallerySlug: string) => void;
 }
 
 function GalleryList({ galleries, onOpenGallery }: GalleryListProps) {
@@ -23,7 +24,7 @@ function GalleryList({ galleries, onOpenGallery }: GalleryListProps) {
             title={gallery.title}
             description={gallery.description}
             coverImage={gallery.cover_image}
-            onClick={() => onOpenGallery(gallery.id)}
+            onClick={() => onOpenGallery(gallery.slug)}
           />
         </Grid>
       ))}
