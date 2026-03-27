@@ -1,5 +1,5 @@
 import pool from "../database/db";
-import type { CreateGalleryBody, Gallery } from "../interfaces/gallery.interface";
+import type { CreateGalleryBody, Gallery, GalleryImage } from "../interfaces/gallery.interface";
 
 export async function createGalleryService({
   title,
@@ -72,4 +72,34 @@ export async function getGalleryBySlugService(slug:string): Promise<Gallery|null
   );
 
   return result.rows[0] || null;
+}
+
+export async function getGalleryImagesBySlugService(slug:string): Promise<GalleryImage[]> {
+  const galleryResult = await pool.query(
+    `
+    SELECT id
+    FROM galleries
+    WHERE slug = $1
+    LIMIT 1
+    `,
+    [slug]
+  );
+
+  const gallery = galleryResult.rows[0];
+
+  if (!gallery) {
+    throw new Error("Gallery not found");
+  }
+
+  const imagesResult = await pool.query(
+    `
+    SELECT id, gallery_id, image_url, alt_text, display_order, created_at
+    FROM gallery_images
+    WHERE gallery_id = $1
+    ORDER BY display_order ASC, created_at ASC
+    `,
+    [gallery.id]
+  );
+
+  return imagesResult.rows;
 }

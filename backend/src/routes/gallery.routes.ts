@@ -3,14 +3,16 @@ import {
   createGalleryController,
   deleteGalleryController,
   getAllGalleriesController,
-  getGalleryBySlugController
+  getGalleryBySlugController,
+  getGalleryImagesBySlugController
 } from "../controllers/gallery.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
 const galleryRoutes = Router();
 
 galleryRoutes.get("/", getAllGalleriesController);
-galleryRoutes.get("/:slug", getGalleryBySlugController)
+galleryRoutes.get("/:slug/images", getGalleryImagesBySlugController);
+galleryRoutes.get("/:slug", getGalleryBySlugController);
 galleryRoutes.post("/", authMiddleware, createGalleryController);
 galleryRoutes.delete("/:id", authMiddleware, deleteGalleryController);
 

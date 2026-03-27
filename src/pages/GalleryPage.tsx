@@ -9,7 +9,9 @@ import PageHeader from "../components/shared/PageHeader";
 import {
   getAllGalleries,
   getGalleryBySlug,
+  getGalleryImagesBySlug,
   type Gallery,
+  type GalleryImage,
 } from "../services/galleryService";
 
 function GalleryPage() {
@@ -20,6 +22,7 @@ function GalleryPage() {
   const [selectedGallery, setSelectedGallery] = useState<Gallery | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
 
   const isGalleryDetails = Boolean(gallerySlug);
 
@@ -39,20 +42,26 @@ function GalleryPage() {
       }
     }
 
-    async function fetchGalleryDetails() {
-      try {
-        setLoading(true);
-        setError("");
-        setGalleries([]);
+async function fetchGalleryDetails() {
+  try {
+    setLoading(true);
+    setError("");
+    setGalleries([]);
+    setGalleryImages([]);
 
-        const data = await getGalleryBySlug(gallerySlug as string);
-        setSelectedGallery(data);
-      } catch {
-        setError("Failed to load gallery details.");
-      } finally {
-        setLoading(false);
-      }
-    }
+    const [galleryData, imagesData] = await Promise.all([
+      getGalleryBySlug(gallerySlug as string),
+      getGalleryImagesBySlug(gallerySlug as string),
+    ]);
+
+    setSelectedGallery(galleryData);
+    setGalleryImages(imagesData);
+  } catch {
+    setError("Failed to load gallery details.");
+  } finally {
+    setLoading(false);
+  }
+}
 
     if (isGalleryDetails && gallerySlug) {
       fetchGalleryDetails();
@@ -125,7 +134,7 @@ function GalleryPage() {
               Images not implemented yet.
             </Typography>
 
-            <GalleryGrid images={[]} />
+            <GalleryGrid images={galleryImages.map((image) => image.image_url)} />
           </>
         )}
       </PageContainer>
