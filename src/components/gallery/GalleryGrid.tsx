@@ -1,11 +1,12 @@
-    import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Grid";
 import GalleryImageCard from "./GalleryImageCard";
 
 interface GalleryGridProps {
   images: string[];
+  onImageClick: (index: number) => void;
 }
 
-function GalleryGrid({ images }: GalleryGridProps) {
+function GalleryGrid({ images, onImageClick }: GalleryGridProps) {
   return (
     <Grid container spacing={3}>
       {images.map((image, index) => (
@@ -13,6 +14,7 @@ function GalleryGrid({ images }: GalleryGridProps) {
           <GalleryImageCard
             image={image}
             alt={`Imagem ${index + 1}`}
+            onClick={() => onImageClick(index)}
           />
         </Grid>
       ))}

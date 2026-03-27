@@ -1,6 +1,7 @@
-import { Alert, Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import GalleryImageModal from "../components/gallery/GalleryImageModal";
 import GalleryGrid from "../components/gallery/GalleryGrid";
 import GalleryList from "../components/gallery/GalleryList";
 import AppLayout from "../components/shared/AppLayout";
@@ -23,6 +24,9 @@ function GalleryPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
+    null,
+  );
 
   const isGalleryDetails = Boolean(gallerySlug);
 
@@ -42,26 +46,26 @@ function GalleryPage() {
       }
     }
 
-async function fetchGalleryDetails() {
-  try {
-    setLoading(true);
-    setError("");
-    setGalleries([]);
-    setGalleryImages([]);
+    async function fetchGalleryDetails() {
+      try {
+        setLoading(true);
+        setError("");
+        setGalleries([]);
+        setGalleryImages([]);
 
-    const [galleryData, imagesData] = await Promise.all([
-      getGalleryBySlug(gallerySlug as string),
-      getGalleryImagesBySlug(gallerySlug as string),
-    ]);
+        const [galleryData, imagesData] = await Promise.all([
+          getGalleryBySlug(gallerySlug as string),
+          getGalleryImagesBySlug(gallerySlug as string),
+        ]);
 
-    setSelectedGallery(galleryData);
-    setGalleryImages(imagesData);
-  } catch {
-    setError("Failed to load gallery details.");
-  } finally {
-    setLoading(false);
-  }
-}
+        setSelectedGallery(galleryData);
+        setGalleryImages(imagesData);
+      } catch {
+        setError("Failed to load gallery details.");
+      } finally {
+        setLoading(false);
+      }
+    }
 
     if (isGalleryDetails && gallerySlug) {
       fetchGalleryDetails();
@@ -74,14 +78,40 @@ async function fetchGalleryDetails() {
     navigate(`/gallery/${slug}`);
   }
 
+  function handleOpenImage(index:number) {
+    setSelectedImageIndex(index);
+  }
+
+  function handleCloseImage() {
+    setSelectedImageIndex(null);
+  }
+
+  function handlePreviousImage() {
+    if (!galleryImages.length || selectedImageIndex === null) return;
+
+    setSelectedImageIndex((prev) => {
+      if (prev === null) return null;
+      return prev === 0 ? galleryImages.length - 1 : prev - 1;
+    });
+  }
+
+  function handleNextImage() {
+    if (!galleryImages.length || selectedImageIndex === null) return;
+
+    setSelectedImageIndex((prev) => {
+      if (prev === null) return null;
+      return prev === galleryImages.length - 1 ? 0 : prev + 1;
+    });
+  }
+
+  const imageUrls = galleryImages.map((image) => image.image_url)
+
   return (
     <AppLayout>
       <PageContainer>
         <PageHeader
           title={
-            isGalleryDetails
-              ? selectedGallery?.title || "Gallery"
-              : "Gallery"
+            isGalleryDetails ? selectedGallery?.title || "Gallery" : "Gallery"
           }
           subtitle={
             isGalleryDetails
@@ -130,11 +160,19 @@ async function fetchGalleryDetails() {
               </Box>
             )}
 
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-              Images not implemented yet.
-            </Typography>
+            <GalleryGrid
+              images={imageUrls}
+              onImageClick={handleOpenImage}
+            />
 
-            <GalleryGrid images={galleryImages.map((image) => image.image_url)} />
+            <GalleryImageModal
+              open={selectedImageIndex !== null}
+              images={imageUrls}
+              currentIndex={selectedImageIndex ?? 0}
+              onClose={handleCloseImage}
+              onPrevious={handlePreviousImage}
+              onNext={handleNextImage}
+            />
           </>
         )}
       </PageContainer>
