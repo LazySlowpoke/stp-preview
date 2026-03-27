@@ -16,8 +16,10 @@ export interface GalleryImage {
   created_at: string;
 }
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export async function getAllGalleries(): Promise<Gallery[]> {
-  const response = await fetch("http://localhost:3000/galleries", {
+  const response = await fetch(`${API_URL}/galleries`, {
     method: "GET",
     credentials: "include",
   });
@@ -30,7 +32,7 @@ export async function getAllGalleries(): Promise<Gallery[]> {
 }
 
 export async function getGalleryBySlug(slug: string): Promise<Gallery> {
-  const response = await fetch(`http://localhost:3000/galleries/${slug}`, {
+  const response = await fetch(`${API_URL}/galleries/${slug}`, {
     method: "GET",
     credentials: "include",
   });
@@ -45,7 +47,7 @@ export async function getGalleryBySlug(slug: string): Promise<Gallery> {
 export async function getGalleryImagesBySlug(
   slug: string
 ): Promise<GalleryImage[]> {
-  const response = await fetch(`http://localhost:3000/galleries/${slug}/images`, {
+  const response = await fetch(`${API_URL}/galleries/${slug}/images`, {
     method: "GET",
     credentials: "include",
   });
